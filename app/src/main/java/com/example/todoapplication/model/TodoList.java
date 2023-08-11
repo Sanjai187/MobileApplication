@@ -5,15 +5,24 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * <p>
+ * Representing the Todo list pojo of the Todo application
+ * </p>
+ *
+ * @author sanjai
+ * @version 1.0
+ */
 public class TodoList {
 
     private List<Todo> todoList;
     private String parentId;
 
-    public TodoList(String parentId) {
+    public TodoList(final String parentId) {
         this.parentId = parentId;
         this.todoList = new ArrayList<>();
     }
+
     public String getParentId() {
         return parentId;
     }
@@ -33,6 +42,7 @@ public class TodoList {
     public List<Todo> getAll() {
         return todoList;
     }
+
     public List getAllList(final Long parentId) {
         if (parentId == null) {
             return todoList;

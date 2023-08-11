@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ChildList">
+    tools:context=".ChildProject">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -34,7 +35,42 @@
                 android:layout_toEndOf="@id/backButton1"
                 android:layout_marginStart="10dp"/>
 
+
+            <ImageView
+                android:id="@+id/search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="352dp"
+                android:layout_marginTop="8dp"
+                android:contextClickable="true"
+                android:src="@drawable/search" />
+
         </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:fitsSystemWindows="true"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/searchbar"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:iconifiedByDefault="false"
+                app:queryHint="Search Name"
+                android:visibility="gone"></androidx.appcompat.widget.SearchView>
+
+            <Spinner
+                android:id="@+id/statusbutton"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                android:visibility="gone"/>
+
+        </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
