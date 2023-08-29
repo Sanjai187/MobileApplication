@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -37,6 +38,10 @@ public class Activitor extends AppCompatActivity {
     private ArrayAdapter<Project> arrayAdapter;
     private ActivatorController activatorController;
     private static Long id = 0L;
+    private static final int REQUEST_CODE = 1;
+    private TextView profileIcon;
+    private TextView userName;
+    private TextView userTitle;
 
     /**
      * <p>
@@ -50,21 +55,30 @@ public class Activitor extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final ImageView backButton = findViewById(R.id.backButton);
+        final ImageView editButton = findViewById(R.id.editIcon);
         final Button addButton = findViewById(R.id.addlist);
         final ImageButton menuButton = findViewById(R.id.menuButton);
         final ListView listView = findViewById(R.id.nameListView);
         final ProjectList projectList = new ProjectList();
         final List<Project> list = projectList.getAllList();
         drawerLayout = findViewById(R.id.Layout);
+        profileIcon = findViewById(R.id.profileIcon);
+        userName = findViewById(R.id.userName);
+        userTitle = findViewById(R.id.userTitle);
         activatorController = new ActivatorController(this, projectList);
         arrayAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, list);
 
         listView.setAdapter(arrayAdapter);
         arrayAdapter.notifyDataSetChanged();
         menuButton.setOnClickListener(view -> drawerLayout.openDrawer(GravityCompat.START));
-        backButton.setOnClickListener(view -> drawerLayout.closeDrawer(GravityCompat.START));
         addButton.setOnClickListener(view -> activatorController.onAddNameClicked());
+        editButton.setOnClickListener(view -> {
+            final Intent intent = new Intent(Activitor.this, UserProfile.class);
+
+            intent.putExtra(getString(R.string.user), userName.getText().toString());
+            intent.putExtra(getString(R.string.user_title), userTitle.getText().toString());
+            startActivity(intent);
+        });
         listView.setOnItemClickListener((adapterView, view, i, l) -> {
             final Project selectedProject = projectList.getAllList().get(i);
 
@@ -76,6 +90,19 @@ public class Activitor extends AppCompatActivity {
             activatorController.onListItemLongClicked(selectedProject);
             return true;
         });
+    }
+
+    @Override
+    protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
+            final String userName = data.getStringExtra(getString(R.string.user));
+            final String userTitle = data.getStringExtra(getString(R.string.user_title));
+
+            this.userName.setText(userName);
+            this.userTitle.setText(userTitle);
+        }
     }
 
     /**

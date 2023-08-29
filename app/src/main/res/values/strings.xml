@@ -21,6 +21,14 @@
     <string name="back">Back</string>
     <string name="search">Search</string>
     <string name="next">Next</string>
+    <string name="save">Save</string>
+    <string name="enter_the_title">Enter the title</string>
+    <string name="title">Title</string>
+    <string name="enter_the_name">Enter the name</string>
+    <string name="name">Name</string>
+    <string name="s">S</string>
+    <string name="user_title">User Title</string>
+    <string name="user">User</string>
     <string-array name="filter_options">
         <item>Status</item>
         <item>Completed</item>

@@ -24,7 +24,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
-                android:src="@drawable/menu_open"
+                android:src="@drawable/menu"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/menu" />
 
@@ -62,28 +62,50 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="bottom"
-                android:padding="16dp">
-
-                <ImageView
-                    android:id="@+id/backButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginTop="15dp"
-                    android:outlineSpotShadowColor="@color/white"
-                    android:contextClickable="true"
-                    android:src="@drawable/arrow_back"
-                    android:contentDescription="@string/back" />
+                android:padding="30dp">
 
                 <TextView
-                    android:layout_width="220dp"
+                    android:id="@+id/profileIcon"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:background="@drawable/background"
+                    android:text="@string/s"
+                    android:gravity="center"
+                    android:textSize="35sp"
+                    android:layout_marginTop="5dp"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/userName"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="40dp"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/todo_list"
-                    android:textColor="@color/white"
-                    android:textSize="25sp"
-                    android:textStyle="bold" />
+                    android:text="@string/user"
+                    android:textSize="20sp"
+                    android:textColor="@android:color/white"
+                    android:layout_toEndOf="@id/profileIcon"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginStart="10dp"/>
+
+                <TextView
+                    android:id="@+id/userTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/user_title"
+                    android:textColor="@android:color/white"
+                    android:textSize="20sp"
+                    android:layout_below="@id/userName"
+                    android:layout_toEndOf="@id/profileIcon"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="5dp"/>
+
+                <ImageButton
+                    android:id="@+id/editIcon"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/edit"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentEnd="true"
+                    android:background="?attr/selectableItemBackgroundBorderless"/>
 
             </RelativeLayout>
 
