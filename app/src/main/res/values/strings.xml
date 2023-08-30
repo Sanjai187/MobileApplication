@@ -29,8 +29,9 @@
     <string name="s">S</string>
     <string name="user_title">User Title</string>
     <string name="user">User</string>
+    <string name="user_id">User Id</string>
     <string-array name="filter_options">
-        <item>Status</item>
+        <item>All</item>
         <item>Completed</item>
         <item>Not Completed</item>
     </string-array>

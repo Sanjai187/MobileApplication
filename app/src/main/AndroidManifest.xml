@@ -16,6 +16,9 @@
             android:name=".service.ChildProject"
             android:exported="false" />
         <activity
+            android:name=".service.UserProfileActivity"
+            android:exported="false" />
+        <activity
             android:name=".service.Activitor"
             android:exported="true">
             <intent-filter>

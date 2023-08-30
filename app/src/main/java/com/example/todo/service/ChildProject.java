@@ -15,14 +15,17 @@ import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 
 import com.example.todo.R;
+import com.example.todo.model.Filter;
 import com.example.todo.model.Todo;
 import com.example.todo.model.TodoList;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -42,6 +45,7 @@ public class ChildProject extends AppCompatActivity {
     private SearchView searchView;
     private Spinner spinner;
     private Spinner fliter;
+    private Long projectId;
     private Long id = 0L;
     private List<Todo> todoItems;
     private int currentPage = 1;
@@ -97,6 +101,7 @@ public class ChildProject extends AppCompatActivity {
     }
 
     private void initializeData() {
+        projectId = getIntent().getLongExtra(getString(R.string.project_id), 0L);
         selectedList = getIntent().getStringExtra(getString(R.string.project_name));
         todoList = new TodoList();
         todoItems = todoList.getAllList();
@@ -137,7 +142,9 @@ public class ChildProject extends AppCompatActivity {
         if (!text.isEmpty()) {
             final Todo todo = new Todo(text);
 
+            todo.setParentId(projectId);
             todo.setId(++id);
+            todo.setStatus("Not completed");
             todoList.add(todo);
             updateTableLayout();
             saveTodoList();
@@ -313,10 +320,15 @@ public class ChildProject extends AppCompatActivity {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(final AdapterView<?> adapterView, final View view, final int position, final long l) {
+               final Filter filter = new Filter();
+
+                filter.setAttribute("Status");
                 switch (position) {
                     case 0: {
                         layout.removeAllViews();
+
                         for (final Todo todo : todoList.getAllList()) {
+                            filter.setValues(Collections.singletonList("All"));
                             createTable(todo);
                         }
                         break;
@@ -325,6 +337,7 @@ public class ChildProject extends AppCompatActivity {
                         layout.removeAllViews();
                         for (final Todo todo : todoList.getAllList()) {
                             if (todo.isChecked()) {
+                                filter.setValues(Collections.singletonList("Completed"));
                                 createTable(todo);
                             }
                         }
@@ -334,6 +347,7 @@ public class ChildProject extends AppCompatActivity {
                         layout.removeAllViews();
                         for (final Todo todo : todoList.getAllList()) {
                             if (!todo.isChecked()) {
+                                filter.setValues(Collections.singletonList("Not Completed"));
                                 createTable(todo);
                             }
                         }

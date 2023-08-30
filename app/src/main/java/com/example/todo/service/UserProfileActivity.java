@@ -1,6 +1,8 @@
 package com.example.todo.service;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -9,8 +11,9 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.todo.R;
+import com.example.todo.model.UserProfile;
 
-public class UserProfile extends AppCompatActivity {
+public class UserProfileActivity extends AppCompatActivity {
 
     private ImageButton backButton;
     private EditText userTitle;
@@ -30,17 +33,28 @@ public class UserProfile extends AppCompatActivity {
         cancelButton = findViewById(R.id.cancelButton);
         saveButton = findViewById(R.id.saveButton);
         profileIcon = findViewById(R.id.userProfile);
-        final String existingName = getIntent().getStringExtra(getString(R.string.user));
-        final String existingTitle = getIntent().getStringExtra(getString(R.string.user_title));
+        final UserProfile userProfile = new UserProfile();
 
-        userName.setText(existingName);
+        userProfile.setName(getIntent().getStringExtra(getString(R.string.user)));
+        userProfile.setTitle(getIntent().getStringExtra(getString(R.string.user_title)));
+        userName.setText(userProfile.getName());
         userName.getText().clear();
-        userTitle.setText(existingTitle);
+        userTitle.setText(userProfile.getTitle());
         userTitle.getText().clear();
+        profileIcon.setText(userProfile.getProfileIconText());
         backButton.setOnClickListener(view -> onBackPressed());
         cancelButton.setOnClickListener(view -> onBackPressed());
         saveButton.setOnClickListener(view -> {
+            userProfile.setName(userName.getText().toString());
+            userProfile.setTitle(userTitle.getText().toString());
+            profileIcon.setText(userProfile.getProfileIconText());
+            final Intent intent = new Intent();
 
+            intent.putExtra(getString(R.string.user), userProfile.getName());
+            intent.putExtra(getString(R.string.user_title), userProfile.getTitle());
+            intent.putExtra(getString(R.string.user_id), 0L);
+            setResult(RESULT_OK, intent);
+            finish();
         });
     }
 }

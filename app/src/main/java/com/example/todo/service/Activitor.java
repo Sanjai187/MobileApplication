@@ -20,6 +20,7 @@ import com.example.todo.R;
 import com.example.todo.controller.ActivatorController;
 import com.example.todo.model.Project;
 import com.example.todo.model.ProjectList;
+import com.example.todo.model.UserProfile;
 
 import java.util.List;
 
@@ -42,6 +43,7 @@ public class Activitor extends AppCompatActivity {
     private TextView profileIcon;
     private TextView userName;
     private TextView userTitle;
+    private Long userId;
 
     /**
      * <p>
@@ -73,11 +75,11 @@ public class Activitor extends AppCompatActivity {
         menuButton.setOnClickListener(view -> drawerLayout.openDrawer(GravityCompat.START));
         addButton.setOnClickListener(view -> activatorController.onAddNameClicked());
         editButton.setOnClickListener(view -> {
-            final Intent intent = new Intent(Activitor.this, UserProfile.class);
+            final Intent intent = new Intent(Activitor.this, UserProfileActivity.class);
 
             intent.putExtra(getString(R.string.user), userName.getText().toString());
             intent.putExtra(getString(R.string.user_title), userTitle.getText().toString());
-            startActivity(intent);
+            startActivityIfNeeded(intent, REQUEST_CODE);
         });
         listView.setOnItemClickListener((adapterView, view, i, l) -> {
             final Project selectedProject = projectList.getAllList().get(i);
@@ -97,11 +99,14 @@ public class Activitor extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
-            final String userName = data.getStringExtra(getString(R.string.user));
-            final String userTitle = data.getStringExtra(getString(R.string.user_title));
+            final UserProfile userProfile = new UserProfile();
 
-            this.userName.setText(userName);
-            this.userTitle.setText(userTitle);
+            userId = data.getLongExtra(getString(R.string.user_id), 0L);
+            userProfile.setName(data.getStringExtra(getString(R.string.user)));
+            userProfile.setTitle(data.getStringExtra(getString(R.string.user_title)));
+            userName.setText(userProfile.getName());
+            userTitle.setText(userProfile.getTitle());
+            profileIcon.setText(userProfile.getProfileIconText());
         }
     }
 
@@ -117,7 +122,7 @@ public class Activitor extends AppCompatActivity {
         new AlertDialog.Builder(this).setTitle(R.string.add_name).setView(text).setPositiveButton(R.string.ok, (dialog, which) -> {
             final String name = text.getText().toString().trim();
 
-            activatorController.onNameAdded(name, ++id);
+            activatorController.onNameAdded(name, ++id, userId);
             arrayAdapter.notifyDataSetChanged();
         }).setNegativeButton(R.string.cancel, null).create().show();
     }
@@ -137,6 +142,7 @@ public class Activitor extends AppCompatActivity {
     public void goToListPage(final Project project) {
         final Intent intent = new Intent(Activitor.this, ChildProject.class);
 
+        intent.putExtra(getString(R.string.project_id), project.getId());
         intent.putExtra(getString(R.string.project_name), project.getLabel());
         startActivity(intent);
     }

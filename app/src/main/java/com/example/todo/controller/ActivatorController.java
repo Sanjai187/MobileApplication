@@ -22,12 +22,13 @@ public class ActivatorController {
         activitor.addNameDialog();
     }
 
-    public void onNameAdded(final String name, final Long id) {
+    public void onNameAdded(final String name, final Long id, final Long userId) {
         if (!name.isEmpty()) {
             final Project project = new Project();
 
             project.setId(id);
             project.setLabel(name);
+            project.setUserId(userId);
             projectList.add(project);
         }
     }

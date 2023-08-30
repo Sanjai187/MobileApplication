@@ -7,6 +7,8 @@ public class Todo {
     private Long id;
     private String label;
     private boolean isChecked;
+    private Long parentId;
+    private String status;
 
     public Todo(final String label) {
         this.label = label;
@@ -34,6 +36,22 @@ public class Todo {
 
     public void setChecked() {
         this.isChecked =! this.isChecked;
+    }
+
+    public Long getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(final Long parentId) {
+        this.parentId = parentId;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(final String status) {
+        this.status = status;
     }
 
     @NonNull
