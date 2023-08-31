@@ -19,12 +19,12 @@ public class ActivatorController {
     }
 
     public void onAddNameClicked() {
-        activitor.addNameDialog();
+//        activitor.addNameDialog();
     }
 
     public void onNameAdded(final String name, final Long id, final Long userId) {
         if (!name.isEmpty()) {
-            final Project project = new Project();
+            final Project project = new Project(name);
 
             project.setId(id);
             project.setLabel(name);

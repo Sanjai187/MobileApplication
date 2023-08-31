@@ -8,6 +8,10 @@ public class Project {
     private String label;
     private Long userId;
 
+    public Project(final String label) {
+        this.label = label;
+    }
+
     public Long getId() {
         return id;
     }

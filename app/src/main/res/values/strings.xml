@@ -30,6 +30,8 @@
     <string name="user_title">User Title</string>
     <string name="user">User</string>
     <string name="user_id">User Id</string>
+    <string name="enter_the_project">enter the project</string>
+    <string name="project_list">Project List</string>
     <string-array name="filter_options">
         <item>All</item>
         <item>Completed</item>

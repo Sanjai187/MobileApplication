@@ -2,15 +2,15 @@ package com.example.todo.model;
 
 public class UserProfile {
 
-    private String name;
+    private String userName;
     private String title;
 
-    public String getName() {
-        return name;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setName(final String name) {
-        this.name = name;
+    public void setUserName(final String userName) {
+        this.userName = userName;
     }
 
     public String getTitle() {
@@ -21,11 +21,12 @@ public class UserProfile {
         this.title = title;
     }
 
-    public StringBuilder getProfileIconText() {
-        final String[] words = name.split(" ");
+    public StringBuilder getProfileIcon() {
+        final String[] words = userName.split(" ");
         final StringBuilder text = new StringBuilder();
 
         for (final String word : words) {
+
             if (! word.isEmpty()) {
                 text.append(Character.toUpperCase(word.charAt(0)));
             }

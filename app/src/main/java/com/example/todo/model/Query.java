@@ -2,7 +2,7 @@ package com.example.todo.model;
 
 import java.util.List;
 
-public class Quary {
+public class Query {
 
     private String search;
     private List<String> searchAttribute;
@@ -12,7 +12,7 @@ public class Quary {
         return search;
     }
 
-    public void setSearch(String search) {
+    public void setSearch(final String search) {
         this.search = search;
     }
 
@@ -20,7 +20,7 @@ public class Quary {
         return searchAttribute;
     }
 
-    public void setSearchAttribute(List<String> searchAttribute) {
+    public void setSearchAttribute(final List<String> searchAttribute) {
         this.searchAttribute = searchAttribute;
     }
 
@@ -28,7 +28,7 @@ public class Quary {
         return filter;
     }
 
-    public void setFilter(Filter filter) {
+    public void setFilter(final Filter filter) {
         this.filter = filter;
     }
 }

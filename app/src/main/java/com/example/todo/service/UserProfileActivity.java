@@ -2,7 +2,6 @@ package com.example.todo.service;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -35,22 +34,22 @@ public class UserProfileActivity extends AppCompatActivity {
         profileIcon = findViewById(R.id.userProfile);
         final UserProfile userProfile = new UserProfile();
 
-        userProfile.setName(getIntent().getStringExtra(getString(R.string.user)));
+        userProfile.setUserName(getIntent().getStringExtra(getString(R.string.user)));
         userProfile.setTitle(getIntent().getStringExtra(getString(R.string.user_title)));
-        userName.setText(userProfile.getName());
+        userName.setText(userProfile.getUserName());
         userName.getText().clear();
         userTitle.setText(userProfile.getTitle());
         userTitle.getText().clear();
-        profileIcon.setText(userProfile.getProfileIconText());
+        profileIcon.setText(userProfile.getProfileIcon());
         backButton.setOnClickListener(view -> onBackPressed());
         cancelButton.setOnClickListener(view -> onBackPressed());
         saveButton.setOnClickListener(view -> {
-            userProfile.setName(userName.getText().toString());
+            userProfile.setUserName(userName.getText().toString());
             userProfile.setTitle(userTitle.getText().toString());
-            profileIcon.setText(userProfile.getProfileIconText());
+            profileIcon.setText(userProfile.getProfileIcon());
             final Intent intent = new Intent();
 
-            intent.putExtra(getString(R.string.user), userProfile.getName());
+            intent.putExtra(getString(R.string.user), userProfile.getUserName());
             intent.putExtra(getString(R.string.user_title), userProfile.getTitle());
             intent.putExtra(getString(R.string.user_id), 0L);
             setResult(RESULT_OK, intent);

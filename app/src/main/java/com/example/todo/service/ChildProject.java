@@ -15,7 +15,6 @@ import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
@@ -115,19 +114,18 @@ public class ChildProject extends AppCompatActivity {
 
     /**
      * <p>
-     * Filter the table based on the entered text
+     * Toggle the visibility of the search view and spinner
      * </p>
-     *
-     * @param newText representing filter the table based on the entered new text
      */
-    private void filterTableLayout(final String newText) {
-        layout.removeAllViews();
-
-        for (final Todo todo : todoList.getAllList()) {
-
-            if (todo.getLabel().toLowerCase().contains(newText.toLowerCase())) {
-                createTable(todo);
-            }
+    private void toggleSearchView() {
+        if (searchView.getVisibility() == View.GONE) {
+            searchView.setVisibility(View.VISIBLE);
+            spinner.setVisibility(View.VISIBLE);
+            fliter.setVisibility(View.VISIBLE);
+        } else {
+            searchView.setVisibility(View.GONE);
+            spinner.setVisibility(View.GONE);
+            fliter.setVisibility(View.GONE);
         }
     }
 
@@ -150,6 +148,155 @@ public class ChildProject extends AppCompatActivity {
             saveTodoList();
             editText.getText().clear();
         }
+    }
+
+    /**
+     * <p>
+     * Setup the search view with query listeners
+     * </p>
+     */
+    private void setupSearchView() {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(final String query) {
+                filterTableLayout(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(final String newText) {
+                filterTableLayout(newText);
+                return true;
+            }
+        });
+    }
+
+    /**
+     * <p>
+     * Filter the table based on the entered text
+     * </p>
+     *
+     * @param newText representing filter the table based on the entered new text
+     */
+    private void filterTableLayout(final String newText) {
+        layout.removeAllViews();
+
+        for (final Todo todo : todoList.getAllList()) {
+
+            if (todo.getLabel().toLowerCase().contains(newText.toLowerCase())) {
+                createTable(todo);
+            }
+        }
+    }
+
+    /**
+     * <p>
+     * Setup the spinner with filter options
+     * </p>
+     */
+    private void setupSpinner() {
+        final ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.filter_options,  android.R.layout.simple_spinner_item);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(spinnerAdapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(final AdapterView<?> adapterView, final View view, final int position, final long l) {
+                final Filter filter = new Filter();
+
+                filter.setAttribute("Status");
+                switch (position) {
+                    case 0: {
+                        layout.removeAllViews();
+
+                        for (final Todo todo : todoList.getAllList()) {
+                            filter.setValues(Collections.singletonList("All"));
+                            createTable(todo);
+                        }
+                        break;
+                    }
+                    case 1: {
+                        layout.removeAllViews();
+                        for (final Todo todo : todoList.getAllList()) {
+                            if (todo.isChecked()) {
+                                filter.setValues(Collections.singletonList("Completed"));
+                                createTable(todo);
+                            }
+                        }
+                        break;
+                    }
+                    case 2: {
+                        layout.removeAllViews();
+                        for (final Todo todo : todoList.getAllList()) {
+                            if (!todo.isChecked()) {
+                                filter.setValues(Collections.singletonList("Not Completed"));
+                                createTable(todo);
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(final AdapterView<?> adapterView) {
+            }
+        });
+    }
+
+    private void filterPage() {
+        final ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.page_filter,  android.R.layout.simple_spinner_item);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        fliter.setAdapter(spinnerAdapter);
+        fliter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(final AdapterView<?> parent, final View view,
+                                       final int i, final long id) {
+                pageSize = Integer.parseInt(parent.getItemAtPosition(i).toString());
+
+                updateTableLayout();
+                updatePageNumber(pageNumber);
+            }
+
+            @Override
+            public void onNothingSelected(final AdapterView<?> parent) {}
+        });
+
+        next.setOnClickListener(view -> {
+            if ((currentPage * pageSize) < todoItems.size()) {
+                currentPage++;
+                updateTableLayout();
+                updatePageNumber(pageNumber);
+            }
+        });
+
+        previous.setOnClickListener(view -> {
+            if (currentPage > 1) {
+                currentPage--;
+                updateTableLayout();
+                updatePageNumber(pageNumber);
+            }
+        });
+        loadTodoList(selectedList);
+    }
+
+    /**
+     * <p>
+     * Remove an item from the table layout
+     * </p>
+     *
+     * @param todo representing todo item
+     */
+    public void removeItem(final TableRow row, final Todo todo) {
+        layout.removeView(row);
+        todoList.remove(todo.getId());
+        final int totalPageCount = (int) Math.ceil((double) todoItems.size()/ pageSize);
+
+        if (currentPage > totalPageCount) {
+            currentPage = totalPageCount;
+        }
+        viewTable();
+        updatePageNumber(pageNumber);
+        saveTodoList();
     }
 
     /**
@@ -205,19 +352,6 @@ public class ChildProject extends AppCompatActivity {
 
     /**
      * <p>
-     * Get the check box state from shared preferences
-     * </p>
-     *
-     * @param label representing list name
-     */
-    private boolean getCheckedBoxState(final String label) {
-        final SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.preference), MODE_PRIVATE);
-
-        return sharedPreferences.getBoolean(label, false);
-    }
-
-    /**
-     * <p>
      * Save the check box state to shared preferences
      * </p>
      *
@@ -234,22 +368,15 @@ public class ChildProject extends AppCompatActivity {
 
     /**
      * <p>
-     * Remove an item from the table layout
+     * Get the check box state from shared preferences
      * </p>
      *
-     * @param todo representing todo item
+     * @param label representing list name
      */
-    public void removeItem(final TableRow row, final Todo todo) {
-        layout.removeView(row);
-        todoList.remove(todo.getId());
-        final int totalPageCount = (int) Math.ceil((double) todoItems.size()/ pageSize);
+    private boolean getCheckedBoxState(final String label) {
+        final SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.preference), MODE_PRIVATE);
 
-        if (currentPage > totalPageCount) {
-            currentPage = totalPageCount;
-        }
-        viewTable();
-        updatePageNumber(pageNumber);
-        saveTodoList();
+        return sharedPreferences.getBoolean(label, false);
     }
 
     /**
@@ -291,98 +418,6 @@ public class ChildProject extends AppCompatActivity {
         editor.apply();
     }
 
-    /**
-     * <p>
-     * Toggle the visibility of the search view and spinner
-     * </p>
-     */
-    private void toggleSearchView() {
-        if (searchView.getVisibility() == View.GONE) {
-            searchView.setVisibility(View.VISIBLE);
-            spinner.setVisibility(View.VISIBLE);
-            fliter.setVisibility(View.VISIBLE);
-        } else {
-            searchView.setVisibility(View.GONE);
-            spinner.setVisibility(View.GONE);
-            fliter.setVisibility(View.GONE);
-        }
-    }
-
-    /**
-     * <p>
-     * Setup the spinner with filter options
-     * </p>
-     */
-    private void setupSpinner() {
-        final ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.filter_options,  android.R.layout.simple_spinner_item);
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(spinnerAdapter);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(final AdapterView<?> adapterView, final View view, final int position, final long l) {
-               final Filter filter = new Filter();
-
-                filter.setAttribute("Status");
-                switch (position) {
-                    case 0: {
-                        layout.removeAllViews();
-
-                        for (final Todo todo : todoList.getAllList()) {
-                            filter.setValues(Collections.singletonList("All"));
-                            createTable(todo);
-                        }
-                        break;
-                    }
-                    case 1: {
-                        layout.removeAllViews();
-                        for (final Todo todo : todoList.getAllList()) {
-                            if (todo.isChecked()) {
-                                filter.setValues(Collections.singletonList("Completed"));
-                                createTable(todo);
-                            }
-                        }
-                        break;
-                    }
-                    case 2: {
-                        layout.removeAllViews();
-                        for (final Todo todo : todoList.getAllList()) {
-                            if (!todo.isChecked()) {
-                                filter.setValues(Collections.singletonList("Not Completed"));
-                                createTable(todo);
-                            }
-                        }
-                        break;
-                    }
-                }
-            }
-
-            @Override
-            public void onNothingSelected(final AdapterView<?> adapterView) {
-            }
-        });
-    }
-
-    /**
-     * <p>
-     * Setup the search view with query listeners
-     * </p>
-     */
-    private void setupSearchView() {
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(final String query) {
-                filterTableLayout(query);
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(final String newText) {
-                filterTableLayout(newText);
-                return true;
-            }
-        });
-    }
-
     @SuppressLint("DefaultLocale")
     private void updatePageNumber(final TextView pageNumber) {
         final int totalPage = (int) Math.ceil((double) todoItems.size() / pageSize);
@@ -400,41 +435,5 @@ public class ChildProject extends AppCompatActivity {
 
             createTable(todo);
         }
-    }
-
-    private void filterPage() {
-        final ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.page_filter,  android.R.layout.simple_spinner_item);
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        fliter.setAdapter(spinnerAdapter);
-        fliter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(final AdapterView<?> parent, final View view,
-                                       final int i, final long id) {
-                pageSize = Integer.parseInt(parent.getItemAtPosition(i).toString());
-
-                updateTableLayout();
-                updatePageNumber(pageNumber);
-            }
-
-            @Override
-            public void onNothingSelected(final AdapterView<?> parent) {}
-        });
-
-        next.setOnClickListener(view -> {
-            if ((currentPage * pageSize) < todoItems.size()) {
-                currentPage++;
-                updateTableLayout();
-                updatePageNumber(pageNumber);
-            }
-        });
-
-        previous.setOnClickListener(view -> {
-            if (currentPage > 1) {
-                currentPage--;
-                updateTableLayout();
-                updatePageNumber(pageNumber);
-            }
-        });
-        loadTodoList(selectedList);
     }
 }
